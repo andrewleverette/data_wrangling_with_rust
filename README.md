@@ -4,7 +4,7 @@ A series of articles that explore working with data using Datafusion and Apache 
 
 ## Table of Contents
 
-* [Introduction to Datafusion and Apache Arrow](./introduction_to_datafusion_and_apache_arrow)
+* [Introduction to Apache Arrow and Datafusion](./introduction_to_apache_arrow_and_datafusion)
 * [Data Aggregation with Datafusion](./data_aggregation_with_datafusion)
 * [Data in Flight](./data_in_flight)
 * [Extending Datafusion](./extending_datafusion)
@@ -13,9 +13,9 @@ A series of articles that explore working with data using Datafusion and Apache 
 
 In general, the first two articles provide high level overviews, while the second two article articles take a deeper look into the libraries.
 
-### Introduction to Datafusion and Apache Arrow
+### Introduction to Apache Arrow and Datafusion
 
-This article gives an overview of both Datafusion and Apache Arrow. The focus is introducing both of the libraries and exploring their primary use cases. Important features are explored at a high level, and code samples are used to provide examples.
+This article gives an overview of both Apache Arrow and Datafusion. The focus is introducing both of the libraries and exploring their primary use cases. Important features are explored at a high level, and code samples are used to provide examples.
 
 ### Data Aggregation with Datafusion
 
