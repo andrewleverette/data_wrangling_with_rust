@@ -19,7 +19,7 @@ This article gives an overview of both Apache Arrow and Datafusion. The focus is
 
 ### Data Aggregation with Datafusion
 
-This article provides a more in-depth look at Datfusion. The focus is on exploring how to use Datafusion to aggregate data by using either the DataFrame API or the SQL Parser API. Both methods are described in detail and illustrated with code samples.
+This article provides a more in-depth look at Datafusion. The focus is on exploring how to use Datafusion to aggregate data by using either the DataFrame API or the SQL Parser API. Both methods are described in detail and illustrated with code samples.
 
 ### Data in Flight
 
