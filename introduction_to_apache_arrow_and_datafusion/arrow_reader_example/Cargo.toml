@@ -1,5 +1,5 @@
 [package]
-name = "arrow_example"
+name = "arrow_reader_example"
 version = "0.1.0"
 authors = ["Andrew Leverette <andrewleverette@gmail.com>"]
 edition = "2018"
