@@ -1,6 +1,6 @@
-# Introduction to Apache Arrow and Datafusion
+# Introduction to Apache Arrow and DataFusion
 
-This article gives an overview of both Datafusion and Apache Arrow. The focus is introducing both of the libraries and exploring their primary use cases. Important features are explored at a high level, and code samples are used to provide examples.
+This article gives an overview of both DataFusion and Apache Arrow. The focus is introducing both of the libraries and exploring their primary use cases. Important features are explored at a high level, and code samples are used to provide examples.
 
 ## Outline
 
@@ -9,7 +9,7 @@ This article gives an overview of both Datafusion and Apache Arrow. The focus is
 - What is this series about and why am I writing it?
 - What topcis will be covered in the series?
 
-### Topic: Introduction to Apache Arrow and Datafusion
+### Topic: Introduction to Apache Arrow and DataFusion
 
 - What is the goal of this article?
 - What will be covered in this article
@@ -27,7 +27,7 @@ This article gives an overview of both Datafusion and Apache Arrow. The focus is
 
 - Operations on arrays
 
-### Datafusion
+### DataFusion
 
 - What is DataFusion
 
