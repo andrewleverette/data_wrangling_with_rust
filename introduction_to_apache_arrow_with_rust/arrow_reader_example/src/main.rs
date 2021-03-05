@@ -1,10 +1,45 @@
 use std::fs::File;
+use std::sync::Arc;
 
 use arrow::csv;
-use arrow::error::Result;
+use arrow::error::Result as ArrowResult;
+use arrow::datatypes::{DataType, Field, Schema};
 
+fn main() -> ArrowResult<()> {
+    let file = File::open("../../data/StudentACTResults.csv").unwrap();
+  
+    reader_example()?;
+    reader_builder_example()?;
 
-fn main() -> Result<()> {
+    Ok(())
+}
+
+fn reader_example() -> ArrowResult<()> {
+    // Initialize schema
+    let schema = Schema::new(vec![
+        Field::new("student", DataType::Int64, false),
+        Field::new("attended_study_group", DataType::Boolean, false),
+        Field::new("group", DataType::Int64, false),
+        Field::new("english", DataType::Int64, false),
+        Field::new("reading", DataType::Int64, false),
+        Field::new("math", DataType::Int64, false),
+        Field::new("science", DataType::Int64, false),
+    ]);
+    
+    let file = File::open("../../data/StudentACTResults.csv").unwrap();
+
+    // Initialize reader with headers and batch size
+    let mut csv_reader = csv::Reader::new(file, Arc::new(schema), true, None, 1000, None, None);
+
+    // Get next batch record
+   let batch = csv_reader.next().unwrap().unwrap();
+
+   println!("{:?}", batch);
+
+    Ok(())
+}
+
+fn reader_builder_example() -> ArrowResult<()> {
     let file = File::open("../../data/StudentACTResults.csv").unwrap();
     
     // Configure CSV builder that infers

@@ -1,7 +1,7 @@
 use std::fs::File;
 
 use arrow::array::{Array, ArrayRef, BooleanArray, Int64Array};
-use arrow::compute::kernels::filter;
+use arrow::compute::{ filter, lexsort_to_indices, take, SortColumn};
 use arrow::csv;
 use arrow::datatypes::DataType;
 use arrow::error::Result as ArrowResult;
@@ -22,11 +22,40 @@ fn main() -> ArrowResult<()> {
     // CSV reader is an iterator over RecordBatch results
     let batch = csv_reader.next().unwrap().unwrap();
 
+    // Sort batch by group
+    let sorted_batch = sort_by_group(&batch).unwrap();
+
+    println!("{:?}", sorted_batch);
+
+    // Filter out all results except group 1
     let filtered_batch = filter_by_group(1, &batch)?;
 
     println!("{:?}", filtered_batch);
 
     Ok(())
+}
+
+fn sort_by_group(batch: &RecordBatch) -> ArrowResult<RecordBatch> {
+    // Create a SortColumn from the group column
+    let sort_column = SortColumn {
+        values: batch.column(2).clone(),
+        options: None,
+    };
+
+    // Build an array of sorted indices
+    let indices = lexsort_to_indices(&[sort_column])?;
+
+    // Create a new RecordBatch with re-ordered
+    // rows from the original batch by calling 
+    // take on each column
+    RecordBatch::try_new(
+        batch.schema(),
+        batch
+            .columns()
+            .iter()
+            .map(|column| take(column.as_ref(), &indices, None))
+            .collect::<ArrowResult<Vec<ArrayRef>>>()?,
+    )
 }
 
 fn filter_by_group(group: i64, batch: &RecordBatch) -> ArrowResult<RecordBatch> {
@@ -56,8 +85,8 @@ fn filter_by_group(group: i64, batch: &RecordBatch) -> ArrowResult<RecordBatch> 
         };
 
         // Apply filter to column;
-        let filtered = filter::filter(array, &filter_array)?;
-        
+        let filtered = filter(array, &filter_array)?;
+
         arrays.push(filtered);
     }
 
