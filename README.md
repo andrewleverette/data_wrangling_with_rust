@@ -4,7 +4,7 @@ A series of articles that explore working with data using DataFusion and Apache 
 
 ## Table of Contents
 
-* [Introduction to Apache Arrow and DataFusion](./introduction_to_apache_arrow_and_datafusion)
+* [Introduction to Apache Arrow with Rust](./introduction_to_apache_arrow_with_rust)
 * [Data Aggregation with DataFusion](./data_aggregation_with_datafusion)
 * [Data in Flight](./data_in_flight)
 * [Extending DataFusion](./extending_datafusion)
