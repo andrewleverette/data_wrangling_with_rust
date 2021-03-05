@@ -7,7 +7,8 @@ use arrow::error::Result;
 fn main() -> Result<()> {
     let file = File::open("../../data/StudentACTResults.csv").unwrap();
     
-    // Configure CSV builder
+    // Configure CSV builder that infers
+    // the schema of the CSV file
     let csv_builder = csv::ReaderBuilder::new()
         .has_header(true)
         .infer_schema(Some(100));
