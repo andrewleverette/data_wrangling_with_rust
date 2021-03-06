@@ -1,9 +1,10 @@
 use std::fs::File;
+use std::sync::Arc;
 
-use arrow::array::{Array, ArrayRef, BooleanArray, Int64Array};
-use arrow::compute::{ filter, lexsort_to_indices, take, SortColumn};
+use arrow::array::{Array, ArrayRef, BooleanArray, Float64Array, Int64Array};
+use arrow::compute::{filter, lexsort_to_indices, sort, sum, take, SortColumn};
 use arrow::csv;
-use arrow::datatypes::DataType;
+use arrow::datatypes::{DataType, Field, Schema};
 use arrow::error::Result as ArrowResult;
 use arrow::record_batch::RecordBatch;
 
@@ -32,6 +33,11 @@ fn main() -> ArrowResult<()> {
 
     println!("{:?}", filtered_batch);
 
+    // Average score by group
+    let averaged_batch = average_score_by_group(&batch)?;
+
+    println!("{:?}", averaged_batch);
+
     Ok(())
 }
 
@@ -46,7 +52,7 @@ fn sort_by_group(batch: &RecordBatch) -> ArrowResult<RecordBatch> {
     let indices = lexsort_to_indices(&[sort_column])?;
 
     // Create a new RecordBatch with re-ordered
-    // rows from the original batch by calling 
+    // rows from the original batch by calling
     // take on each column
     RecordBatch::try_new(
         batch.schema(),
@@ -92,4 +98,65 @@ fn filter_by_group(group: i64, batch: &RecordBatch) -> ArrowResult<RecordBatch> 
 
     // Create a new record batch from filtered results
     RecordBatch::try_new(batch.schema(), arrays)
+}
+
+fn average_score_by_group(batch: &RecordBatch) -> ArrowResult<RecordBatch> {
+    // Find unique instances of the group column
+    let mut groups = sort(batch.column(2), None)?
+        .as_any()
+        .downcast_ref::<Int64Array>()
+        .unwrap()
+        .values()
+        .to_vec();
+
+    groups.dedup();
+
+    // Initialize builders
+    let mut builders = vec![
+        Float64Array::builder(groups.len()),
+        Float64Array::builder(groups.len()),
+        Float64Array::builder(groups.len()),
+        Float64Array::builder(groups.len()),
+    ];
+
+    // For each unique group
+    // Calculate the average for each score column
+    for group in &groups {
+        let mut builder_idx = 0;
+        let group_batch = filter_by_group(*group, &batch)?;
+
+        let row_count = group_batch.num_rows() as f64;
+
+        for col_idx in 3..=6 {
+            let column = group_batch
+                .column(col_idx)
+                .as_any()
+                .downcast_ref::<Int64Array>()
+                .unwrap();
+
+            let column_sum = sum(column).unwrap() as f64;
+
+            builders[builder_idx].append_value(column_sum / row_count)?;
+
+            builder_idx += 1;
+        }
+    }
+
+    // Compile results from builder arrays
+    let mut results: Vec<ArrayRef> = vec![Arc::new(Int64Array::from(groups))];
+    for mut builder in builders {
+        results.push(Arc::new(builder.finish()));
+    }
+
+    // Initialize new schema to reflect projection
+    // and aggregation of original batch
+    let schema = Schema::new(vec![
+        Field::new("group", DataType::Int64, false),
+        Field::new("english", DataType::Float64, false),
+        Field::new("reading", DataType::Float64, false),
+        Field::new("math", DataType::Float64, false),
+        Field::new("science", DataType::Float64, false),
+    ]);
+
+    RecordBatch::try_new(Arc::new(schema), results)
 }

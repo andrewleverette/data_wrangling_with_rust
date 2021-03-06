@@ -23,10 +23,12 @@ This article gives an overview of Apache Arrow. The focus is introducing the lib
 ## Data Readers
 
 - CSV Reader
-- CSV Reader Builder
+- JSON Reader
 
 ## Compute Kernels
 
+- Take
+- Limit
 - Sort
 - Filter
 - Aggregations
