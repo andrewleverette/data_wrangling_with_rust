@@ -8,24 +8,26 @@ This article gives an overview of Apache Arrow. The focus is introducing the lib
 - In-memory columnar format
 - Language-agnostic specification
 
-## Low Level Arrays
+## Rust Implmentation
+
+### Low Level Arrays
 
 - What are arrays?
 - Initializing arrays
 - Array builders
 
-## High Level Constructs
+### High Level Constructs
 
 - Field
 - Schema
 - RecordBatch
 
-## Data Readers
+### Data Readers
 
 - CSV Reader
 - JSON Reader
 
-## Compute Kernels
+### Compute Kernels
 
 - Take
 - Limit
