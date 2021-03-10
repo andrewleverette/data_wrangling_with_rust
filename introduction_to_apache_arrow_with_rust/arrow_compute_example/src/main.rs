@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::sync::Arc;
 
-use arrow::array::{Array, ArrayRef, BooleanArray, Float64Array, Int64Array};
+use arrow::array::{ArrayRef, BooleanArray, Float64Array, Int64Array};
 use arrow::compute::{filter, sort_to_indices, sort, sum, take};
 use arrow::csv;
 use arrow::datatypes::{DataType, Field, Schema};
@@ -133,8 +133,7 @@ fn average_score_by_group(batch: &RecordBatch) -> ArrowResult<RecordBatch> {
         results.push(Arc::new(builder.finish()));
     }
 
-    // Initialize new schema to reflect projection
-    // and aggregation of original batch
+    // Initialize new schema to reflect aggregation of original batch
     let schema = Schema::new(vec![
         Field::new("group", DataType::Int64, false),
         Field::new("english", DataType::Float64, false),
