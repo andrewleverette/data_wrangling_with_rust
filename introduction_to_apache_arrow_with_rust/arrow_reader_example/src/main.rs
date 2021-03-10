@@ -28,7 +28,7 @@ fn reader_example() -> ArrowResult<()> {
     
     let file = File::open("../../data/StudentACTResults.csv").unwrap();
 
-    // Initialize reader with headers and batch size
+    // Initialize reader with indicator that headers exits and batch size
     let mut csv_reader = csv::Reader::new(file, Arc::new(schema), true, None, 1000, None, None);
 
     // Get next batch record

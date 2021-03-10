@@ -2,7 +2,7 @@ use std::fs::File;
 use std::sync::Arc;
 
 use arrow::array::{Array, ArrayRef, BooleanArray, Float64Array, Int64Array};
-use arrow::compute::{filter, lexsort_to_indices, sort, sum, take, SortColumn};
+use arrow::compute::{filter, sort_to_indices, sort, sum, take};
 use arrow::csv;
 use arrow::datatypes::{DataType, Field, Schema};
 use arrow::error::Result as ArrowResult;
@@ -42,14 +42,8 @@ fn main() -> ArrowResult<()> {
 }
 
 fn sort_by_group(batch: &RecordBatch) -> ArrowResult<RecordBatch> {
-    // Create a SortColumn from the group column
-    let sort_column = SortColumn {
-        values: batch.column(2).clone(),
-        options: None,
-    };
-
     // Build an array of sorted indices
-    let indices = lexsort_to_indices(&[sort_column])?;
+    let indices = sort_to_indices(batch.column(2), None)?;
 
     // Create a new RecordBatch with re-ordered
     // rows from the original batch by calling
@@ -79,16 +73,7 @@ fn filter_by_group(group: i64, batch: &RecordBatch) -> ArrowResult<RecordBatch> 
 
     // Iterate over the columns and apply filter
     for idx in 0..batch.num_columns() {
-        let array = batch.column(idx);
-
-        // Downcast array ref to specific array implementation based on type
-        let array = match array.data_type() {
-            &DataType::Int64 => array.as_any().downcast_ref::<Int64Array>().unwrap() as &dyn Array,
-            &DataType::Boolean => {
-                array.as_any().downcast_ref::<BooleanArray>().unwrap() as &dyn Array
-            }
-            _ => panic!("Data type not supported"),
-        };
+        let array = batch.column(idx).as_ref();
 
         // Apply filter to column;
         let filtered = filter(array, &filter_array)?;

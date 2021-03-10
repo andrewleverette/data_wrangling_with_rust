@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use arrow::array::*;
 use arrow::datatypes::*;
-use arrow::error::Result;
+use arrow::error::Result as ArrowResult;
 use arrow::record_batch::*;
 
-fn main() -> Result<()> {
+fn main() -> ArrowResult<()> {
     // Define a schema with a vector of fields
     let schema = Schema::new(vec![
         Field::new("string", DataType::Utf8, false),

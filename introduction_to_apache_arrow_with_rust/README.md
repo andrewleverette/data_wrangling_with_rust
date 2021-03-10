@@ -24,13 +24,12 @@ This article gives an overview of Apache Arrow. The focus is introducing the lib
 
 ### Data Readers
 
+> Should this section be relabeled to "Data IO" and add cover writing cvs files?
+
 - CSV Reader
-- JSON Reader
 
 ### Compute Kernels
 
-- Take
-- Limit
-- Sort
 - Filter
-- Aggregations
+- Sort
+- Group By
