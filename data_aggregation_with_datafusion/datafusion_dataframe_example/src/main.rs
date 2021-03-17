@@ -23,6 +23,7 @@ async fn main() -> DataFusionResult<()> {
         .sort(vec![col("group").sort(true, true)])?;
 
     // Execute the query defined by the data frame
+    // and collect the results
     let results = df.collect().await?;
 
     println!("{:?}", results);
